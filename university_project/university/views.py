@@ -20,4 +20,12 @@ def teacher_form(request):
     return render(request, "teacher_form.html")
 
 def group_form(request):
+    if request.method == "GET":
+        return render(request, "group_form.html")
+    print("Дані форми отримано!", request.POST)
+    g = Group.objects.create(
+        name_of_the_group=request.POST["name_of_the_group"],
+        curator=request.POST["curator"],
+    )
+    print("Запис збережено: ", g)
     return render(request, "group_form.html")
