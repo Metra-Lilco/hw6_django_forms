@@ -4,16 +4,7 @@
 <h3>Для додавання викладача у базу даних - введіть дані у форму нижче:</h3>
 <form action="" method="post">
     {% csrf_token %}
-    <label for="first_name">Ім'я: </label>
-    <input id="first_name" type="text" name="first_name">
-    <label for="patronymic">По батькові: </label>
-    <input id="patronymic" type="text" name="patronymic">
-    <label for="last_name">Прізвище: </label>
-    <input id="last_name" type="text" name="last_name">
-    <label for="birth_date">Дата народження: <small>(YYYY-MM-DD)</small></label>
-    <input id="birth_date" type="text" name="birth_date">
-    <label for="subject">Предмет викладання: </label>
-    <input id="subject" type="text" name="subject">
+    {{ form.as_p }}
 </br>
     <input type="submit" value="Зберегти дані">
 </form>
