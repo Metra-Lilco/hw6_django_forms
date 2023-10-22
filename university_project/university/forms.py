@@ -1,5 +1,6 @@
 from django import forms
 from django.utils import timezone
+from .models import Teacher, Group
 
 
 class TeacherForm(forms.Form):
@@ -25,21 +26,41 @@ class TeacherForm(forms.Form):
     def clean_first_name(self):
         first_name = self.cleaned_data["first_name"]
         if len(str(first_name)) >= 151:
-            raise forms.ValidationError("Ім'я не може бути більше 150 символів.")
+            raise forms.ValidationError("Ім'я не може містити більше 150 символів.")
 
     def clean_patronymic(self):
         patronymic = self.cleaned_data["patronymic"]
         if len(str(patronymic)) >= 151:
-            raise forms.ValidationError("По батькові не може бути більше 150 символів.")
+            raise forms.ValidationError("По батькові не може містити більше 150 символів.")
 
     def clean_last_name(self):
         last_name = self.cleaned_data["last_name"]
         if len(str(last_name)) >= 201:
-            raise forms.ValidationError("Прізвище не може бути більше 200 символів.")
+            raise forms.ValidationError("Прізвище не може містити більше 200 символів.")
 
     def clean_subject(self):
         subject = self.cleaned_data["subject"]
         if len(str(subject)) >= 151:
             raise forms.ValidationError(
-                "'Предмет викладання' не може бути більше 150 символів."
+                "'Предмет викладання' не може містити більше 150 символів."
             )
+
+
+class GroupForm(forms.Form):
+    name_of_the_group = forms.CharField(label="Назва групи")
+    curator = forms.ModelChoiceField(
+        queryset=Teacher.objects.all(),  # Замість Teacher, використовуйте вашу модель вчителя
+        label="Куратор",
+        empty_label="Оберіть куратора з вчителів",  # Порожній елемент для вибору
+    )
+
+    def clean_name_of_the_group(self):
+        name_of_the_group = self.cleaned_data["name_of_the_group"]
+        if len(str(name_of_the_group)) >= 201:
+            raise forms.ValidationError(
+                "Назва групи не може містити більше 200 символів."
+            )
+
+    class Meta:
+        model = Group
+        fields = ["name_of_the_group", "curator"]

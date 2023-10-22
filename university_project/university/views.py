@@ -1,9 +1,8 @@
 from django.shortcuts import render
 
 # Create your views here.
-from .forms import TeacherForm
-from .models import Teacher
-from .models import Group
+from .forms import TeacherForm, GroupForm
+from .models import Teacher, Group
 
 
 def teacher_form(request):
@@ -28,11 +27,16 @@ def teacher_form(request):
 
 def group_form(request):
     if request.method == "GET":
-        return render(request, "group_form.html")
-    print("Дані форми отримано!", request.POST)
-    g = Group.objects.create(
-        name_of_the_group=request.POST["name_of_the_group"],
-        curator=request.POST["curator"],
-    )
-    print("Запис збережено: ", g)
-    return render(request, "group_form.html")
+        form = GroupForm()
+        return render(request, "group_form.html", {"form": form})
+    form = GroupForm(request.POST)
+    if form.is_valid():
+        g = Group.objects.create(
+            name_of_the_group=request.POST["name_of_the_group"],
+            curator=request.POST["curator"],
+        )
+        print("Запис збережено: ", g)
+    else:
+        print("Invalid form!")
+        print(form.errors)
+    return render(request, "group_form.html", {"form": form})
