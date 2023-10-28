@@ -31,7 +31,9 @@ class TeacherForm(forms.Form):
     def clean_patronymic(self):
         patronymic = self.cleaned_data["patronymic"]
         if len(str(patronymic)) >= 151:
-            raise forms.ValidationError("По батькові не може містити більше 150 символів.")
+            raise forms.ValidationError(
+                "По батькові не може містити більше 150 символів."
+            )
 
     def clean_last_name(self):
         last_name = self.cleaned_data["last_name"]
@@ -49,9 +51,9 @@ class TeacherForm(forms.Form):
 class GroupForm(forms.Form):
     name_of_the_group = forms.CharField(label="Назва групи")
     curator = forms.ModelChoiceField(
-        queryset=Teacher.objects.all(),  # Замість Teacher, використовуйте вашу модель вчителя
+        queryset=Teacher.objects.all(),
         label="Куратор",
-        empty_label="Оберіть куратора з вчителів",  # Порожній елемент для вибору
+        empty_label="Оберіть куратора з вчителів",
     )
 
     def clean_name_of_the_group(self):

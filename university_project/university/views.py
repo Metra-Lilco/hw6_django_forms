@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from .forms import TeacherForm, GroupForm
@@ -19,10 +19,16 @@ def teacher_form(request):
             subject=request.POST["subject"],
         )
         print("Запис збережено: ", t)
+        return redirect("teachers_list")
     else:
         print("Invalid form!")
         print(form.errors)
     return render(request, "teacher_form.html", {"form": form})
+
+
+def teachers_list(request):
+    teachers = Teacher.objects.all()
+    return render(request, "teachers_list.html", {"teachers": teachers})
 
 
 def group_form(request):
