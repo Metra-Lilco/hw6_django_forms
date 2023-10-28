@@ -18,3 +18,6 @@ class Group(models.Model):
         max_length=200, verbose_name="Name of the group"
     )
     curator = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name_of_the_group
