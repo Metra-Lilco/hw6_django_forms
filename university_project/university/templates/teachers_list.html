@@ -1,6 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>Список викладачів:</h3>
 <ul>
     {% for teacher in teachers %}
       <li>Викладач: {{ teacher.first_name }} {{ teacher.patronymic }} {{ teacher.last_name }}, 
         дата народження: {{ teacher.birth_date|date:"d.m.Y" }}, викладає предмет: {{ teacher.subject }}</li>
     {% endfor %}
 </ul>
+</body>
+</html>
