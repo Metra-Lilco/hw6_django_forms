@@ -61,20 +61,7 @@ class TeacherForm(forms.ModelForm):
 
 
 class GroupForm(forms.ModelForm):
-    # name_of_the_group = forms.CharField(label="Назва групи")
-    # curator = forms.ModelChoiceField(
-    #     queryset=Teacher.objects.all(),
-    #     label="Куратор",
-    #     empty_label="Оберіть куратора з вчителів",
-    # )
     class Meta:
-        # curator = forms.ModelChoiceField(
-        #         queryset=Teacher.objects.all(),
-        #         label="Куратор",
-        #         empty_label="Оберіть куратора з вчителів",
-        #         help_text="Виберіть куратора зі списку вчителів.",
-        #     )
-
         model = Group
         fields = ["name_of_the_group", "curator"]
         labels = {"name_of_the_group": _("Назва групи"), "curator": _("Куратор")}
@@ -86,23 +73,3 @@ class GroupForm(forms.ModelForm):
                 "Назва групи не може містити більше 200 символів."
             )
         return name_of_the_group
-
-    # curator = forms.ModelChoiceField(
-    #     queryset=Teacher.objects.all(),
-    #     label="Куратор",
-    #     empty_label="Оберіть куратора з вчителів",
-    # )
-    # class Meta:
-    #     model = Group
-    #     fields = ["name_of_the_group", "curator"]
-    # curator = forms.ModelChoiceField(
-    #     queryset=Teacher.objects.all(),
-    #     label="Куратор",
-    #     empty_label="Оберіть куратора з вчителів",
-    #     help_text="Виберіть куратора зі списку вчителів.",
-    # )
-
-    # def clean_curator(self):
-    #     curator = self.cleaned_data["curator"]
-    #     curator1 = Teacher.objects.get(pk=curator)
-    #     return curator1

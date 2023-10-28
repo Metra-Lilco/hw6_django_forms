@@ -5,6 +5,14 @@ from .forms import TeacherForm, GroupForm
 from .models import Teacher, Group
 
 
+def index(request):
+    return render(request, "index.html")
+
+
+def university(request):
+    return redirect("index")
+
+
 def teacher_form(request):
     if request.method == "GET":
         form = TeacherForm()
