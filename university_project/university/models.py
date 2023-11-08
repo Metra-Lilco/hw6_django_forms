@@ -22,7 +22,9 @@ class Group(models.Model):
     def __str__(self):
         return self.name_of_the_group
 
+
 # ДЗ 7. reverse, urls
+
 
 class Student(models.Model):
     first_name = models.CharField(max_length=150, verbose_name="First name")

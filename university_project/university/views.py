@@ -49,3 +49,20 @@ def group_form(request):
 def groups_list(request):
     groups = Group.objects.all()
     return render(request, "groups_list.html", {"groups": groups})
+
+
+# ДЗ 7. reverse, urls
+
+
+def student_form(request):
+    if request.method == "GET":
+        form = TeacherForm()
+        return render(request, "teacher_form.html", {"form": form})
+    form = TeacherForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return redirect("teachers_list")
+    else:
+        print("Invalid form!")
+        print(form.errors)
+    return render(request, "teacher_form.html", {"form": form})
