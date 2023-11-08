@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 # Create your views here.
-from .forms import TeacherForm, GroupForm
-from .models import Teacher, Group
+from .forms import TeacherForm, GroupForm, StudentForm
+from .models import Teacher, Group, Student
 
 
 def index(request):
@@ -56,13 +57,18 @@ def groups_list(request):
 
 def student_form(request):
     if request.method == "GET":
-        form = TeacherForm()
-        return render(request, "teacher_form.html", {"form": form})
-    form = TeacherForm(request.POST)
+        form = StudentForm()
+        return render(request, "student_form.html", {"form": form})
+    form = StudentForm(request.POST)
     if form.is_valid():
         form.save()
-        return redirect("teachers_list")
+        return redirect("students_list")
     else:
         print("Invalid form!")
         print(form.errors)
-    return render(request, "teacher_form.html", {"form": form})
+    return render(request, "student_form.html", {"form": form})
+
+
+def students_list(request):
+    students = Student.objects.all()
+    return render(request, "students_list.html", {"students": students})
