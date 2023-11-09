@@ -61,8 +61,11 @@ def student_form(request):
         return render(request, "student_form.html", {"form": form})
     form = StudentForm(request.POST)
     if form.is_valid():
-        form.save()
-        return redirect("students_list")
+        if not Group.objects.exists():
+            return redirect("group_form")
+        else:
+            form.save()
+            return redirect("students_list")
     else:
         print("Invalid form!")
         print(form.errors)

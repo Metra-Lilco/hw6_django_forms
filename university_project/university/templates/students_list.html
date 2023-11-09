@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<body>
+<a href="{% url 'index' %}">Повернутись на головну сторінку</a>
+</br>
+<h3>Список студентів:</h3>
+<ul>
+    {% for student in students %}
+      <li>Студент: {{ student.first_name }} {{ student.last_name }}, 
+        дата народження: {{ student.birth_date|date:"d.m.Y" }}, група: {{ student.group }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
