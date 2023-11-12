@@ -75,3 +75,15 @@ def student_form(request):
 def students_list(request):
     students = Student.objects.all()
     return render(request, "students_list.html", {"students": students})
+
+
+def teacher_edit(request, pk):
+    teacher = Teacher.objects.get(pk=pk)
+    if request.method == "GET":
+        form = TeacherForm(isinstance=teacher)
+        return render(request, "teacher_edit.html", {"form": form})
+    form = TeacherForm(request.POST, isinstance=teacher)
+    if form.is_valid():
+        form.save()
+        return redirect("teachers_list")
+    return render(request, "teacher_edit.html", {"form": form})
