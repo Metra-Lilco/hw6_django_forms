@@ -7,7 +7,11 @@
 <ul>
     {% for teacher in teachers %}
       <li>Викладач: {{ teacher.first_name }} {{ teacher.patronymic }} {{ teacher.last_name }}, 
-        дата народження: {{ teacher.birth_date|date:"d.m.Y" }}, викладає предмет: {{ teacher.subject }}</li>
+        дата народження: {{ teacher.birth_date|date:"d.m.Y" }}, викладає предмет: {{ teacher.subject }}
+        <a href="{% url 'teacher_edit' pk=teacher.id %}">
+            <button>Редагувати</button>
+        </a>
+      </li>
     {% endfor %}
 </ul>
 </body>

@@ -30,7 +30,13 @@ class Student(models.Model):
     first_name = models.CharField(max_length=150, verbose_name="First name")
     last_name = models.CharField(max_length=200, verbose_name="Last name")
     birth_date = models.DateField(verbose_name="Date of birth")
-    group = models.ForeignKey(Group, on_delete=models.PROTECT)
+    group = models.ForeignKey(
+        Group,
+        on_delete=models.PROTECT,
+        related_name="students_list",
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
