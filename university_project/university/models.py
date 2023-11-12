@@ -34,8 +34,6 @@ class Student(models.Model):
         Group,
         on_delete=models.PROTECT,
         related_name="students_list",
-        null=True,
-        blank=True,
     )
 
     def __str__(self):
