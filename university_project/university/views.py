@@ -1,5 +1,4 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 
 # Create your views here.
@@ -29,6 +28,20 @@ def teacher_form(request):
     return render(request, "teacher_form.html", {"form": form})
 
 
+def teacher_delete(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+
+    if request.method == "POST":
+        teacher.delete()
+        messages.success(
+            request,
+            f"Викладача {teacher.first_name} {teacher.patronymic} {teacher.last_name} успішно видалено.",
+        )
+        return redirect("teachers_list")
+
+    return render(request, "teacher_delete.html", {"teacher": teacher})
+
+
 def teachers_list(request):
     teachers = Teacher.objects.all()
     return render(request, "teachers_list.html", {"teachers": teachers})
@@ -47,6 +60,7 @@ def group_form(request):
                 "на сторінку створення викладача, який може виконувати обов'язки куратора групи.",
             )
             return redirect("teacher_form")
+
         else:
             form.save()
             return redirect("groups_list")
@@ -54,6 +68,17 @@ def group_form(request):
         print("Invalid form!")
         print(form.errors)
     return render(request, "group_form.html", {"form": form})
+
+
+def group_delete(request, pk):
+    group = get_object_or_404(Group, pk=pk)
+
+    if request.method == "POST":
+        group.delete()
+        messages.success(request, f"Групу {group.name_of_the_group} успішно видалено.")
+        return redirect("groups_list")
+
+    return render(request, "group_delete.html", {"group": group})
 
 
 def groups_list(request):
@@ -70,16 +95,8 @@ def student_form(request):
         return render(request, "student_form.html", {"form": form})
     form = StudentForm(request.POST)
     if form.is_valid():
-        if not Group.objects.exists():
-            messages.warning(
-                request,
-                "Так як ви не обрали групу для студента, можливо ще не створено"
-                " жодної групи. Тому вас перенаправлено на сторінку створення групи.",
-            )
-            return redirect(reverse("group_form"))
-        else:
-            form.save()
-            return redirect("students_list")
+        form.save()
+        return redirect("students_list")
     else:
         print("Invalid form!")
         print(form.errors)
@@ -98,6 +115,20 @@ def student_edit(request, pk):
     return render(request, "student_edit.html", {"form": form})
 
 
+def student_delete(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+
+    if request.method == "POST":
+        student.delete()
+        messages.success(
+            request,
+            f"Студента {student.first_name} {student.last_name} успішно видалено.",
+        )
+        return redirect("students_list")
+
+    return render(request, "student_delete.html", {"student": student})
+
+
 def students_list(request):
     students = Student.objects.all()
     return render(request, "students_list.html", {"students": students})
@@ -113,3 +144,15 @@ def teacher_edit(request, pk):
         form.save()
         return redirect("teachers_list")
     return render(request, "teacher_edit.html", {"form": form})
+
+
+def group_edit(request, pk):
+    group = Group.objects.get(pk=pk)
+    if request.method == "GET":
+        form = GroupForm(instance=group)
+        return render(request, "group_edit.html", {"form": form})
+    form = GroupForm(request.POST, instance=group)
+    if form.is_valid():
+        form.save()
+        return redirect("groups_list")
+    return render(request, "group_edit.html", {"form": form})

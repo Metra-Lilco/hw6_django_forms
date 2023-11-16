@@ -1,6 +1,20 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
 <body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 <a href="{% url 'index' %}">Повернутись на головну сторінку</a>
 </br>
 <h3>Список груп:</h3>
@@ -8,6 +22,12 @@
     {% for group in groups %}
       <li>
         Назва групи: {{ group.name_of_the_group }}. Куратор: {{ group.curator }}
+        <a href="{% url 'group_edit' pk=group.id %}">
+            <button>Редагувати</button>
+        </a>
+        <a href="{% url 'group_delete' pk=group.id %}">
+            <button>Видалити</button>
+        </a>
         <ul>
             {% for student in group.students.all %}
               <li>Студент: {{ student.first_name }} {{ student.last_name }}</li>

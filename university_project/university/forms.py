@@ -17,7 +17,7 @@ class TeacherForm(forms.ModelForm):
             "subject": _("Предмет викладання"),
         }
         help_texts = {
-            "birth_date": _("<small>(введіть дату у форматі YYYY-MM-DD)</small>")
+            "birth_date": _("<small>(введіть дату у форматі DD.MM.YYYY)</small>")
         }
 
     def clean_birth_date(self):
@@ -61,10 +61,35 @@ class TeacherForm(forms.ModelForm):
 
 
 class GroupForm(forms.ModelForm):
+    students_to_add = forms.ModelMultipleChoiceField(
+        queryset=Student.objects.none(),
+        label="Студенти, що на даний момент не розподілені по групам:",
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "form-control"}),
+        required=False,
+    )
+
     class Meta:
         model = Group
         fields = ["name_of_the_group", "curator"]
         labels = {"name_of_the_group": _("Назва групи"), "curator": _("Куратор")}
+
+    def __init__(self, *args, **kwargs):
+        super(GroupForm, self).__init__(*args, **kwargs)
+
+        students_without_group = Student.objects.filter(group__isnull=True)
+
+        if students_without_group.exists():
+            self.fields["students_to_add"].queryset = students_without_group
+        else:
+            self.fields["students_to_add"] = forms.CharField(
+                label="",
+                widget=forms.TextInput(
+                    attrs={"class": "form-control", "style": "width: 270px;"}
+                ),
+                initial="Всі студенти вже розподілені по групах",
+                required=False,
+                disabled=True,
+            )
 
     def clean_name_of_the_group(self):
         name_of_the_group = self.cleaned_data["name_of_the_group"]
@@ -73,6 +98,22 @@ class GroupForm(forms.ModelForm):
                 "Назва групи не може містити більше 200 символів."
             )
         return name_of_the_group
+
+    def save(self, commit=True):
+        group = super().save(commit=False)
+        students_to_add = self.cleaned_data["students_to_add"]
+
+        if commit:
+            group.save()
+            group.students.set(students_to_add)
+
+        return group
+
+    def clean(self):
+        cleaned_data = super().clean()
+        students_to_add = cleaned_data.get("students_to_add")
+        print("Обрані студенти:", students_to_add)
+        return cleaned_data
 
 
 # ДЗ 7. reverse, urls
@@ -89,8 +130,14 @@ class StudentForm(forms.ModelForm):
             "group": _("Група"),
         }
         help_texts = {
-            "birth_date": _("<small>(введіть дату у форматі YYYY-MM-DD)</small>")
+            "birth_date": _("<small>(введіть дату у форматі DD.MM.YYYY)</small>")
         }
+        group = forms.ModelChoiceField(
+            queryset=Group.objects.all(),
+            required=False,
+            empty_label="Не призначено",
+            widget=forms.Select,
+        )
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data["birth_date"]

@@ -1,6 +1,20 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
 <body>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 <a href="{% url 'index' %}">Повернутись на головну сторінку</a>
 </br>
 <h3>Список викладачів:</h3>
@@ -10,6 +24,9 @@
         дата народження: {{ teacher.birth_date|date:"d.m.Y" }}, викладає предмет: {{ teacher.subject }}
         <a href="{% url 'teacher_edit' pk=teacher.id %}">
             <button>Редагувати</button>
+        </a>
+        <a href="{% url 'teacher_delete' pk=teacher.id %}">
+            <button>Видалити</button>
         </a>
       </li>
     {% endfor %}

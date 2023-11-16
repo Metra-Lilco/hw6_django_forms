@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <title>Підтвердження видалення</title>
+</head>
+<body>
+    <h2>Ви впевнені, що хочете видалити групу {{ group.name_of_the_group }}?</h2>
+    
+    <form method="post" action="{% url 'group_delete' pk=group.pk %}">
+        {% csrf_token %}
+        <button type="submit">Так, видалити</button>
+    </form>
+
+    <a href="{% url 'groups_list' %}">
+        <button type="reset">Скасувати видалення</button>
+    </a>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

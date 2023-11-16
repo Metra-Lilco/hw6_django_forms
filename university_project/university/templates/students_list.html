@@ -1,18 +1,36 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+
 <body>
-<a href="{% url 'index' %}">Повернутись на головну сторінку</a>
-</br>
-<h3>Список студентів:</h3>
-<ul>
-    {% for student in students %}
-      <li>Студент: {{ student.first_name }} {{ student.last_name }}, 
-        дата народження: {{ student.birth_date|date:"d.m.Y" }}, група: {{ student.group }}
-        <a href="{% url 'student_edit' pk=student.id %}">
-            <button>Редагувати</button>
-        </a>
-      </li>
-    {% endfor %}
-</ul>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <a href="{% url 'index' %}">Повернутись на головну сторінку</a>
+    <br>
+    <h3>Список студентів:</h3>
+    <ul>
+        {% for student in students %}
+        <li>Студент: {{ student.first_name }} {{ student.last_name }},
+            дата народження: {{ student.birth_date|date:"d.m.Y" }}, група: {{ student.group }}
+            <a href="{% url 'student_edit' pk=student.id %}">
+                <button>Редагувати</button>
+            </a>
+            <a href="{% url 'student_delete' pk=student.id %}">
+                <button>Видалити</button>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
+
 </html>

@@ -18,9 +18,12 @@ class Group(models.Model):
         max_length=200, verbose_name="Name of the group"
     )
     curator = models.ForeignKey(Teacher, on_delete=models.CASCADE)
+    students = models.ManyToManyField("Student", related_name="students_list")
 
     def __str__(self):
-        return self.name_of_the_group
+        if self.name_of_the_group:
+            return self.name_of_the_group
+        return "Не призначено"
 
 
 # ДЗ 7. reverse, urls
@@ -34,6 +37,8 @@ class Student(models.Model):
         Group,
         on_delete=models.PROTECT,
         related_name="students_list",
+        null=True,
+        blank=True,
     )
 
     def __str__(self):

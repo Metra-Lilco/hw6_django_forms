@@ -1,34 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 
 <html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <script src="https://cdn.tailwindcss.com"></script>
-
-        <style>
-            .a-link {
-                line-height: 1;
-                display: inline-block;
-                color: blue;
-                text-decoration: none;
-                cursor: pointer;
-            }
-            .a-link:after {
-                display: block;
-                content: "";
-                height: 2px;
-                width: 0%;
-                background-color: blue;
-                transition: width .1s ease-in-out;
-            }
-            .a-link:hover:after,
-            .a-link:focus:after {
-                width: 100%;
-            }
-        </style>
-
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
         <title>University</title>
     </head>
 
@@ -41,7 +19,7 @@
                     <a class="a-link" href="{% url 'student_form' %}">Форма додавання нового студента</a></br>
                     <a class="a-link" href="{% url 'students_list' %}">Список всіх студентів</a></br>
                     <a class="a-link" href="{% url 'group_form' %}">Форма створення нової групи</a></br>
-                    <a class="a-link" href="{% url 'groups_list' %}">Список всіх груп з їх кураторами</a>
+                    <a class="a-link" href="{% url 'groups_list' %}">Список всіх груп з їх кураторами та студентами</a>
                 </div>
         </div>
     </body>
