@@ -62,8 +62,8 @@ class TeacherForm(forms.ModelForm):
 
 class GroupForm(forms.ModelForm):
     students_to_add = forms.ModelMultipleChoiceField(
-        queryset=Student.objects.none(),
-        label="Студенти, що на даний момент не розподілені по групам:",
+        queryset=Student.objects.all(),
+        label="Додати студентів до групи:",
         widget=forms.CheckboxSelectMultiple(attrs={"class": "form-control"}),
         required=False,
     )
@@ -72,24 +72,6 @@ class GroupForm(forms.ModelForm):
         model = Group
         fields = ["name_of_the_group", "curator"]
         labels = {"name_of_the_group": _("Назва групи"), "curator": _("Куратор")}
-
-    def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
-
-        students_without_group = Student.objects.filter(group__isnull=True)
-
-        if students_without_group.exists():
-            self.fields["students_to_add"].queryset = students_without_group
-        else:
-            self.fields["students_to_add"] = forms.CharField(
-                label="",
-                widget=forms.TextInput(
-                    attrs={"class": "form-control", "style": "width: 270px;"}
-                ),
-                initial="Всі студенти вже розподілені по групах",
-                required=False,
-                disabled=True,
-            )
 
     def clean_name_of_the_group(self):
         name_of_the_group = self.cleaned_data["name_of_the_group"]
@@ -120,24 +102,25 @@ class GroupForm(forms.ModelForm):
 
 
 class StudentForm(forms.ModelForm):
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        required=False,
+        label="Додати студента до таких груп:",
+        widget=forms.CheckboxSelectMultiple(attrs={"class": "form-control"}),
+    )
+
     class Meta:
         model = Student
-        fields = ["first_name", "last_name", "birth_date", "group"]
+        fields = ["first_name", "last_name", "birth_date", "groups"]
         labels = {
             "first_name": _("Ім'я"),
             "last_name": _("Прізвище"),
             "birth_date": _("Дата народження"),
-            "group": _("Група"),
+            "groups": _("Групи"),
         }
         help_texts = {
             "birth_date": _("<small>(введіть дату у форматі DD.MM.YYYY)</small>")
         }
-        group = forms.ModelChoiceField(
-            queryset=Group.objects.all(),
-            required=False,
-            empty_label="Не призначено",
-            widget=forms.Select,
-        )
 
     def clean_birth_date(self):
         birth_date = self.cleaned_data["birth_date"]

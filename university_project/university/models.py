@@ -18,7 +18,6 @@ class Group(models.Model):
         max_length=200, verbose_name="Name of the group"
     )
     curator = models.ForeignKey(Teacher, on_delete=models.CASCADE)
-    students = models.ManyToManyField("Student", related_name="students_list")
 
     def __str__(self):
         if self.name_of_the_group:
@@ -33,11 +32,9 @@ class Student(models.Model):
     first_name = models.CharField(max_length=150, verbose_name="First name")
     last_name = models.CharField(max_length=200, verbose_name="Last name")
     birth_date = models.DateField(verbose_name="Date of birth")
-    group = models.ForeignKey(
+    groups = models.ManyToManyField(
         Group,
-        on_delete=models.PROTECT,
-        related_name="students_list",
-        null=True,
+        related_name="students",
         blank=True,
     )
 

@@ -21,7 +21,17 @@
     <ul>
         {% for student in students %}
         <li>Студент: {{ student.first_name }} {{ student.last_name }},
-            дата народження: {{ student.birth_date|date:"d.m.Y" }}, група: {{ student.group }}
+            дата народження: {{ student.birth_date|date:"d.m.Y" }}
+            {% if student.groups.all.count > 0 %}
+                <p>Студент належить до таких груп:</p>
+                <ul>
+                    {% for group in student.groups.all %}
+                        <li>{{ group }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <li>Студент не належить до жодної групи</li>
+            {% endif %}
             <a href="{% url 'student_edit' pk=student.id %}">
                 <button>Редагувати</button>
             </a>
