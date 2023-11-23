@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
+import phonenumbers
 
 from .models import Teacher, Group, Student
 
@@ -10,14 +10,14 @@ class TeacherForm(forms.ModelForm):
         model = Teacher
         fields = ["first_name", "patronymic", "last_name", "birth_date", "subject"]
         labels = {
-            "first_name": _("Ім'я"),
-            "patronymic": _("По батькові"),
-            "last_name": _("Прізвище"),
-            "birth_date": _("Дата народження"),
-            "subject": _("Предмет викладання"),
+            "first_name": "Ім'я",
+            "patronymic": "По батькові",
+            "last_name": "Прізвище",
+            "birth_date": "Дата народження",
+            "subject": "Предмет викладання",
         }
         help_texts = {
-            "birth_date": _("<small>(введіть дату у форматі DD.MM.YYYY)</small>")
+            "birth_date": "<small>(введіть дату у форматі DD.MM.YYYY)</small>"
         }
 
     def clean_birth_date(self):
@@ -71,7 +71,7 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ["name_of_the_group", "curator"]
-        labels = {"name_of_the_group": _("Назва групи"), "curator": _("Куратор")}
+        labels = {"name_of_the_group": "Назва групи", "curator": "Куратор"}
 
     def clean_name_of_the_group(self):
         name_of_the_group = self.cleaned_data["name_of_the_group"]
@@ -111,15 +111,19 @@ class StudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ["first_name", "last_name", "birth_date", "groups"]
+        fields = ["first_name", "last_name", "birth_date", "phone", "groups"]
         labels = {
-            "first_name": _("Ім'я"),
-            "last_name": _("Прізвище"),
-            "birth_date": _("Дата народження"),
-            "groups": _("Групи"),
+            "first_name": "Ім'я",
+            "last_name": "Прізвище",
+            "birth_date": "Дата народження",
+            "phone": "Номер телефону",
+            "groups": "Групи",
         }
         help_texts = {
-            "birth_date": _("<small>(введіть дату у форматі DD.MM.YYYY)</small>")
+            "birth_date": "<small>(введіть дату у форматі DD.MM.YYYY)</small>"
+        }
+        widgets = {
+            "phone": forms.TextInput(attrs={"placeholder": "+380 111 11 11"}),
         }
 
     def clean_birth_date(self):
@@ -144,3 +148,18 @@ class StudentForm(forms.ModelForm):
         if len(str(last_name)) >= 201:
             raise forms.ValidationError("Прізвище не може містити більше 200 символів.")
         return last_name
+
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"]
+        try:
+            parsed = phonenumbers.parse(phone, None)
+        except phonenumbers.NumberParseException as e:
+            raise forms.ValidationError(e.args[0])
+        if not phonenumbers.is_valid_number(parsed):
+            raise forms.ValidationError(
+                "Схоже що в номері телефону помилка, перевірте уважніше!"
+            )
+
+        return phonenumbers.format_number(
+            parsed, phonenumbers.PhoneNumberFormat.INTERNATIONAL
+        )

@@ -21,7 +21,12 @@
     <ul>
         {% for student in students %}
         <li>Студент: {{ student.first_name }} {{ student.last_name }},
-            дата народження: {{ student.birth_date|date:"d.m.Y" }}
+            дата народження: {{ student.birth_date|date:"d.m.Y" }}, 
+            {% if student.phone %}
+                номер телефону: {{ student.phone }}
+            {% else %}
+                номер телефону не вказаний
+            {% endif %}
             {% if student.groups.all.count > 0 %}
                 <p>Студент належить до таких груп:</p>
                 <ul>
