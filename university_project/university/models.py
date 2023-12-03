@@ -32,6 +32,7 @@ class Student(models.Model):
     first_name = models.CharField(max_length=150, verbose_name="First name")
     last_name = models.CharField(max_length=200, verbose_name="Last name")
     birth_date = models.DateField(verbose_name="Date of birth")
+    phone = models.CharField(max_length=30, null=True, verbose_name="Phone number")
     groups = models.ManyToManyField(
         Group,
         related_name="students",
